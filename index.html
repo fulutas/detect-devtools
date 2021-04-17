@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Chrome Developer Tools State</title>
+
+    <style type="text/css">
+        .container {
+            border: 1px solid #999;
+            border-radius: 6px;
+            margin: 140px auto;
+            padding: 10px;
+            width: 470px;
+            font-family: Helvetica Neue, Helvetica, Arial;
+            background: lightyellow;
+            box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div>Open/close the developer tools to see the change</div>
+        <h1 class="info"></h1>
+    </div>
+
+    <script type="text/javascript">
+
+        var $el = function(sel) {
+            return document.querySelector(sel)
+        };
+
+        var isMac = navigator.platform.toLowerCase().indexOf('mac') > -1,
+                openedRatio = isMac ? 1.6 : 1.5,
+                startedOpenedRatio = isMac ? 0.5 : 0.8,
+                firstTest,
+                inter;
+
+
+        window.addEventListener('load', function() {
+            setTimeout(init, 1000);
+        })
+
+        function init() {
+
+            firstTest = testDevTools();
+
+            $el('.info').innerHTML = firstTest;
+
+        
+
+            startCheck();
+        }
+
+        function testDevTools() {
+
+            var t = performance.now();
+
+            for (var i = 0; i < 100; i++) {
+                console.log(1);
+                console.clear();
+            }
+
+            return performance.now() - t;
+        }
+
+        function startCheck() {
+
+            stopCheck();
+
+            inter = setInterval(function() {
+
+                var test = testDevTools(),
+                    ratio = test / firstTest,
+                    opened = ratio > openedRatio;
+
+                    $el('.info').innerHTML = 'Chrome Console is - ' + (opened ? 'Opened' : 'Closed');
+
+                if (ratio < startedOpenedRatio) {
+                    firstTest = test;
+                }
+
+            }, 1000);
+        }
+
+        function stopCheck() {
+            clearInterval(inter);
+        }
+
+    </script>
+    
+</body>
+</html>
